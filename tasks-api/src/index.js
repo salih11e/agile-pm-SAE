@@ -11,6 +11,9 @@ app.get('/', (req, res) => {
     res.json({ name: 'Tasks-API', version: '1.0.0' });
 });
 
+const tasksRouter = require('./routes/tasks');
+app.use('/api/tasks', tasksRouter);
+
 app.listen(PORT, () => {
     console.log(`Server läuft auf http://localhost:${PORT}`);
 });
