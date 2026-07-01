@@ -1,0 +1,22 @@
+[
+  {
+    "id": "dc5854b5-2c95-4ae7-96a6-bae6b0cf5069",
+    "title": "API implementieren",
+    "description": "",
+    "status": "backlog",
+    "priority": "high",
+    "assignee": null,
+    "tags": [],
+    "storyPoints": 0,
+    "createdAt": "2026-07-01T10:33:51.738Z",
+    "updatedAt": "2026-07-01T10:33:51.738Z",
+    "startedAt": null,
+    "completedAt": null,
+    "statusHistory": [
+      {
+        "status": "backlog",
+        "timestamp": "2026-07-01T10:33:51.738Z"
+      }
+    ]
+  }
+]

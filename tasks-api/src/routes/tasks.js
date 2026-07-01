@@ -4,9 +4,11 @@ const fs = require('fs');
 const path = require('path');
 const Task = require('../models/task');
 
+// Validierung importieren
+const { validateTask } = require('../middleware/validate');
+
 const dataFile = path.join(__dirname, '../../data/tasks.json');
 
-// Hilfsfunktion: Tasks lesen
 const readTasks = () => {
     if (!fs.existsSync(dataFile)) {
         fs.writeFileSync(dataFile, JSON.stringify([]));
@@ -15,12 +17,10 @@ const readTasks = () => {
     return JSON.parse(rawData);
 };
 
-// Hilfsfunktion: Tasks speichern
 const writeTasks = (tasks) => {
     fs.writeFileSync(dataFile, JSON.stringify(tasks, null, 2));
 };
 
-// GET /api/tasks (Alle Tasks, mit optionalen Filtern)
 router.get('/', (req, res) => {
     const { status, assignee } = req.query;
     let tasks = readTasks();
@@ -29,7 +29,6 @@ router.get('/', (req, res) => {
     res.json({ count: tasks.length, tasks });
 });
 
-// GET /api/tasks/:id (Einzelnen Task abrufen)
 router.get('/:id', (req, res) => {
     const tasks = readTasks();
     const task = tasks.find(t => t.id === req.params.id);
@@ -37,8 +36,8 @@ router.get('/:id', (req, res) => {
     res.json(task);
 });
 
-// POST /api/tasks (Neuen Task erstellen)
-router.post('/', (req, res) => {
+// HIER: validateTask als Middleware eingefügt (Vor der eigentlichen Funktion)
+router.post('/', validateTask, (req, res) => {
     const tasks = readTasks();
     const newTask = Task.create(req.body);
     tasks.push(newTask);
@@ -46,8 +45,8 @@ router.post('/', (req, res) => {
     res.status(201).json(newTask);
 });
 
-// PUT /api/tasks/:id (Task komplett aktualisieren)
-router.put('/:id', (req, res) => {
+// HIER: validateTask als Middleware eingefügt
+router.put('/:id', validateTask, (req, res) => {
     const tasks = readTasks();
     const index = tasks.findIndex(t => t.id === req.params.id);
     if (index === -1) return res.status(404).json({ error: 'Task nicht gefunden' });
@@ -57,7 +56,6 @@ router.put('/:id', (req, res) => {
     res.json(tasks[index]);
 });
 
-// DELETE /api/tasks/:id (Task löschen)
 router.delete('/:id', (req, res) => {
     let tasks = readTasks();
     const filteredTasks = tasks.filter(t => t.id !== req.params.id);
@@ -67,7 +65,6 @@ router.delete('/:id', (req, res) => {
     res.json({ message: 'Task gelöscht' });
 });
 
-// PATCH /api/tasks/:id/transition (Kanban-Übergang)
 router.patch('/:id/transition', (req, res) => {
     const { id } = req.params;
     const { status: newStatus } = req.body;
@@ -79,7 +76,6 @@ router.patch('/:id/transition', (req, res) => {
     
     if (taskIndex === -1) return res.status(404).json({ error: 'Task nicht gefunden' });
     
-    // Status anpassen und Historie updaten
     tasks[taskIndex].status = newStatus;
     tasks[taskIndex].updatedAt = new Date().toISOString();
     tasks[taskIndex].statusHistory.push({ status: newStatus, timestamp: new Date().toISOString() });
