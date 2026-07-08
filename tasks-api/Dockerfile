@@ -8,9 +8,9 @@ RUN npm ci --only=production
 FROM node:18-alpine
 WORKDIR /app
 
-# Non-root User
-RUN addgroup -g 1000 appgroup && \
-    adduser -D -u 1000 -G appgroup appuser
+# Non-root User (using ID 1001 instead of 1000)
+RUN addgroup -g 1001 appgroup && \
+    adduser -D -u 1001 -G appgroup appuser
 
 # Dependencies von Builder kopieren
 COPY --from=builder --chown=appuser:appgroup /build/node_modules ./node_modules
