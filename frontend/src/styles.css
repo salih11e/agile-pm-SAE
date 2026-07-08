@@ -1,6 +1,0 @@
-:root { font-family: system-ui, Arial, sans-serif; padding: 1rem; }
-.container { max-width: 800px; margin: 0 auto; }
-.task-list { list-style: none; padding: 0; }
-.task-item { display:flex; justify-content:space-between; padding:0.5rem 0; border-bottom:1px solid #eee; }
-.actions button { margin-left:0.5rem; }
-.task-form { display:flex; gap:0.5rem; margin-bottom:1rem; }
